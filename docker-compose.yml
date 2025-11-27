@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  drupal:
+    image: drupal:latest
+    container_name: drupal_app
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    volumes:
+      - drupal_data:/var/www/html
+    restart: always
+    networks:
+      - drupal_network
+
+  db:
+    image: mariadb:10.6
+    container_name: drupal_db
+    environment:
+      MYSQL_ROOT_PASSWORD: Oceano@
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: adrian
+      MYSQL_PASSWORD: Oceano
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    restart: always
+    networks:
+      - drupal_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: drupal_phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: adrian
+      PMA_PASSWORD: Oceano
+      PMA_ARBITRARY: 1
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    restart: always
+    networks:
+      - drupal_network
+
+volumes:
+  drupal_data:
+  db_data:
+
+networks:
+  drupal_network:
+    driver: bridge
