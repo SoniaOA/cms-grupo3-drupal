@@ -27,7 +27,8 @@ services:
     restart: unless-stopped
     environment:
       PHP_MEMORY_LIMIT: 512M
-    # quita el volumen para que arranque con el core de Drupal
+    #volumes:
+      #- ./drupal_data:/var/www/html
     networks:
       - drunet
 
@@ -46,6 +47,9 @@ services:
       PMA_PASSWORD: Oceano
     networks:
       - drunet
+volumes:
+  drupal_data:
+  db_data:
 
 networks:
   drunet:
